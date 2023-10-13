@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class PomodoroModel: NSObject, ObservedObject {
+class PomodoroModel: NSObject,ObservableObject {
     
 }
  

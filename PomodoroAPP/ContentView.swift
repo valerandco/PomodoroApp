@@ -11,7 +11,7 @@ struct ContentView: View {
     @EnvironmentObject var pomodoroModel: PomodoroModel
     var body: some View {
         Home()
-            .environmentObject(PomodoroModel)
+            .environmentObject(pomodoroModel)
         
     }
 }
