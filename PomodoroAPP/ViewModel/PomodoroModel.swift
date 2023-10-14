@@ -9,6 +9,8 @@ import SwiftUI
 
 class PomodoroModel: NSObject,ObservableObject {
     
+    @Published var progress: CGFloat = 1 
+    
 }
  
 
