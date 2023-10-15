@@ -98,6 +98,20 @@ struct Home: View {
             Color("BG")
                 .ignoresSafeArea()
         }
+        .overlay(content: {
+            ZStack{
+                Color.black
+                    .opacity(pomodoroModel.addNewTimer ? 0.25 : 0)
+                    .onTapGesture{
+                        pomodoroModel.addNewTimer = false
+                    }
+                
+                NewTimerView()
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .offset(y: pomodoroModel.addNewTimer ? 0 :400)
+            }
+            .animation(.easeInOut, value: pomodoroModel.addNewTimer)
+        })
         .preferredColorScheme(.dark)
        
     }
@@ -105,9 +119,68 @@ struct Home: View {
     @ViewBuilder
     func NewTimerView()->some View{
         VStack(spacing: 15){
+            Text("Add New Timer")
+                .font(.title2.bold())
+                .foregroundColor(.white)
+                .padding(.top,10)
+            HStack(spacing: 15){
+                Text("\(pomodoroModel.hour) hr")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white.opacity(0.3))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical,12)
+                    .background{
+                        Capsule()
+                            .fill(.white.opacity(0.07))
+                    }
+                
+                Text("\(pomodoroModel.minutes) min")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white.opacity(0.3))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical,12)
+                    .background{
+                        Capsule()
+                            .fill(.white.opacity(0.07))
+                    }
+                
+                Text("\(pomodoroModel.seconds) sec")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white.opacity(0.3))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical,12)
+                    .background{
+                        Capsule()
+                            .fill(.white.opacity(0.07))
+                    }
+                
+            }
+            .padding(.top,20)
             
+            
+            Button{
+                
+            }label: {
+                Text("Save")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .padding(.vertical)
+                    .padding(.horizontal,100)
+                    .background{
+                        Capsule()
+                            .fill(Color("Purple"))
+                    }
+            }
+            .disabled(pomodoroModel.seconds == 0)
+            .opacity(pomodoroModel.seconds == 0 ? 0.5 : 1)
+            .padding(.top)
         }
         .padding()
+        .frame(maxWidth: .infinity)
         .background{
             RoundedRectangle(cornerRadius: 15, style: .continuous)
                 .fill(Color("BG"))
