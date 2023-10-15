@@ -55,8 +55,12 @@ struct Home: View {
                                 .rotationEffect(.init(degrees: pomodoroModel.progress * 360))
                         }
                         .onTapGesture(perform: {
-                            pomodoroModel.progress
+                            pomodoroModel.progress = 0.5
                         })
+                        
+                        Text(pomodoroModel.timerStringvalue)
+                            .font(.system(size: 45, weight: .light))
+                            .rotationEffect(.init(degrees: -90))
                     }
                     .padding(60)
                     .frame(height: proxy.size.width)
