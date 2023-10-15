@@ -61,10 +61,32 @@ struct Home: View {
                         Text(pomodoroModel.timerStringvalue)
                             .font(.system(size: 45, weight: .light))
                             .rotationEffect(.init(degrees: -90))
+                            .animation(.none, value: pomodoroModel.progress)
                     }
                     .padding(60)
                     .frame(height: proxy.size.width)
                     .rotationEffect(.init(degrees: -90))
+                    .animation(.easeInOut, value: pomodoroModel.progress)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    
+                    Button{
+                        if pomodoroModel.isStarted{
+                            
+                        }else{
+                            pomodoroModel.addNewTimer = true
+                        }
+                    }label: {
+                        Image(systemName: !pomodoroModel.isStarted ? "timer" : "pause")
+                            .font(.largeTitle.bold())
+                            .foregroundColor(.white)
+                            .frame(width: 80, height: 80)
+                            .background{
+                                Circle()
+                                    .fill(Color("Purple"))
+                            }
+                            .shadow(color: Color("Purple"), radius: 8, x: 0, y: 0)
+                    }
+                    
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 
@@ -78,6 +100,19 @@ struct Home: View {
         }
         .preferredColorScheme(.dark)
        
+    }
+    
+    @ViewBuilder
+    func NewTimerView()->some View{
+        VStack(spacing: 15){
+            
+        }
+        .padding()
+        .background{
+            RoundedRectangle(cornerRadius: 15, style: .continuous)
+                .fill(Color("BG"))
+                .ignoresSafeArea()
+        }
     }
 }
 
