@@ -60,7 +60,7 @@ struct Home: View {
                         
                         Text(pomodoroModel.timerStringvalue)
                             .font(.system(size: 45, weight: .light))
-                            .rotationEffect(.init(degrees: -90))
+                            .rotationEffect(.init(degrees: 90))
                             .animation(.none, value: pomodoroModel.progress)
                     }
                     .padding(60)
@@ -71,12 +71,13 @@ struct Home: View {
                     
                     Button{
                         if pomodoroModel.isStarted{
-                            
+                            pomodoroModel.stopTimer()
+                            UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
                         }else{
                             pomodoroModel.addNewTimer = true
                         }
                     }label: {
-                        Image(systemName: !pomodoroModel.isStarted ? "timer" : "pause")
+                        Image(systemName: !pomodoroModel.isStarted ? "timer" : "stop.fill")
                             .font(.largeTitle.bold())
                             .foregroundColor(.white)
                             .frame(width: 80, height: 80)
@@ -103,6 +104,9 @@ struct Home: View {
                 Color.black
                     .opacity(pomodoroModel.addNewTimer ? 0.25 : 0)
                     .onTapGesture{
+                        pomodoroModel.hour = 0
+                        pomodoroModel.minutes = 0
+                        pomodoroModel.seconds = 0 
                         pomodoroModel.addNewTimer = false
                     }
                 
@@ -113,6 +117,23 @@ struct Home: View {
             .animation(.easeInOut, value: pomodoroModel.addNewTimer)
         })
         .preferredColorScheme(.dark)
+        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) {
+            _ in
+            if pomodoroModel.isStarted{
+                pomodoroModel.updateTimer()
+            }
+            
+        }
+        .alert("Congratilations", isPresented: $pomodoroModel.isFinished){
+            Button("Start New", role: .cancel){
+                pomodoroModel.stopTimer()
+                pomodoroModel.addNewTimer = true
+
+            }
+            Button("Close", role: .destructive){
+                pomodoroModel.stopTimer()
+            }
+        }
        
     }
     
@@ -134,6 +155,11 @@ struct Home: View {
                         Capsule()
                             .fill(.white.opacity(0.07))
                     }
+                    .contextMenu{
+                        ContextMenuOptions(maxValue: 12, hint: "hr") { value in
+                            pomodoroModel.hour = value
+                        }
+                    }
                 
                 Text("\(pomodoroModel.minutes) min")
                     .font(.title3)
@@ -144,6 +170,12 @@ struct Home: View {
                     .background{
                         Capsule()
                             .fill(.white.opacity(0.07))
+                    }
+                    .contextMenu{
+                        ContextMenuOptions(maxValue: 60, hint: "min"){ value in
+                            pomodoroModel.minutes = value
+                            
+                        }
                     }
                 
                 Text("\(pomodoroModel.seconds) sec")
@@ -156,13 +188,19 @@ struct Home: View {
                         Capsule()
                             .fill(.white.opacity(0.07))
                     }
+                    .contextMenu{
+                        ContextMenuOptions(maxValue: 60, hint: "sec"){ value in
+                            pomodoroModel.seconds = value
+                            
+                        }
+                    }
                 
             }
             .padding(.top,20)
             
             
             Button{
-                
+                pomodoroModel.stopTimer()
             }label: {
                 Text("Save")
                     .font(.title3)
@@ -186,6 +224,19 @@ struct Home: View {
                 .fill(Color("BG"))
                 .ignoresSafeArea()
         }
+    }
+    
+    @ViewBuilder
+    func ContextMenuOptions(maxValue: Int, hint: String, onClick: @escaping (Int)->()) -> some View{
+        ForEach(0...maxValue, id: \.self){ value in
+            Button("\(value) \(hint)"){
+                onClick(value)
+                
+            }
+            
+            
+        }
+        
     }
 }
 
